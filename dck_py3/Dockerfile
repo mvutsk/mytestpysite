@@ -1,15 +1,18 @@
 FROM python:3.4-slim
 VOLUME /data
-COPY requirements.txt /requirements.txt
+#COPY requirements.txt /requirements.txt
 
 RUN set -ex \
 	&& buildDeps=' \
-		gcc \
-		make \
+		build-essential \
 		openssh-server \
 	' \
 	&& apt-get update && apt-get install -y $buildDeps --no-install-recommends \
 	&& rm -rf /var/lib/apt/lists/*
 
 RUN pip3 install virtualenv
-RUN pip3 install -r /requirements.txt
+#RUN pip3 install -r /requirements.txt
+
+COPY py3-entrypoint.sh /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
