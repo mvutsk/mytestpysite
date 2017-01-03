@@ -1,6 +1,6 @@
 FROM python:3.4-slim
 VOLUME /data
-COPY ../site/requirements.txt /requirements.txt
+COPY requirements.txt /requirements.txt
 
 RUN set -ex \
 	&& buildDeps=' \
