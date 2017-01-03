@@ -41,7 +41,7 @@ if [[ "$1" == "start" ]]; then
 elif [[ "$1" == "init_db" ]]; then
    if [[ -f /data/site/tenv/wiki20/.initcomplete  ]]; then
        echo "Initialization of site already completed. Nothing to do here."
-     elif [[ -f /data/site/wiki20/setup.py ]]; 
+     elif [[ -f /data/site/wiki20/setup.py ]]; then
 	      # && [[ ! -f /data/site/tenv/wiki20/.initcomplete ]]; then
        initsite_db
      else
