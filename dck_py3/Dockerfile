@@ -16,3 +16,5 @@ RUN pip3 install virtualenv
 COPY py3-entrypoint.sh /entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh"]
+
+CMD ["start"]
