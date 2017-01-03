@@ -39,5 +39,4 @@ waitress==1.0.1
 WebHelpers2==2.0
 WebOb==1.7.0
 WebTest==1.4.3
-wiki20==0.1
 zope.interface==4.3.3
