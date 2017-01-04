@@ -18,7 +18,7 @@ initsite_db() {
   cd /data/site
   virtualenv tenv
   source /data/site/tenv/bin/activate
-  mv -vR /data/site/wiki20 /data/site/tenv/
+  mv -v /data/site/wiki20 /data/site/tenv/
   cd /data/site/tenv/wiki20/
   pip3 install -e .
   pip3 install -r requirements.txt
