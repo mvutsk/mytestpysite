@@ -5,7 +5,7 @@ initsite() {
   echo "Initializing site for starting."
   source /data/site/tenv/bin/activate
   cd /data/site/tenv/wiki20
-  pip3 install -e
+  pip3 install -e .
   pip3 install -r requirements.txt
   #python3 setup.py develop
   echo "Starting Circus"
