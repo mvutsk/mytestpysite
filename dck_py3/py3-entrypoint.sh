@@ -7,7 +7,7 @@ initsite() {
   cd /data/site/tenv/wiki20
   pip3 install -e
   pip3 install -r requirements.txt
-  python3 setup.py develop
+  #python3 setup.py develop
   echo "Starting Circus"
   #circusd --daemon /data/site/mywiki34/wiki20/circus.ini
   circusd circus.ini
@@ -45,7 +45,8 @@ elif [[ "$1" == "init_db" ]]; then
 	      # && [[ ! -f /data/site/tenv/wiki20/.initcomplete ]]; then
        initsite_db
      else
-       echo "Could not make init setup of site, because could not find /data/site/tenv/wiki20/setup.py"
+       echo "Could not make init setup of site, because could not find /data/site/tenv/wiki20/setup.py:"
+       ls -la /data/site/wiki20/setup.py
        exit 1
    fi
    
