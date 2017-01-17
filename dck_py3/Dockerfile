@@ -1,6 +1,5 @@
 FROM python:3.4-slim
 VOLUME /data
-#COPY requirements.txt /requirements.txt
 
 RUN set -ex \
 	&& buildDeps=' \
@@ -12,7 +11,6 @@ RUN set -ex \
 	&& rm -rf /var/lib/apt/lists/*
 
 RUN pip3 install virtualenv
-#RUN pip3 install -r /requirements.txt
 
 COPY py3-entrypoint.sh /entrypoint.sh
 
