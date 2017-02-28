@@ -1,4 +1,1 @@
-# mytestpysite
-test site on python TG2 with Mondo
-tratata
-2
+test site on python3.5 with Flask 0.12 and MongoDB

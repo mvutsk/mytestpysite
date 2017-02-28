@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}Welcome{% endblock %}
+
+{% block content %}
+
+  {% if g.user %}
+  <h3>Welcome {{ g.user.username }}!</h3>
+  {% else %}
+  <h3>Welcome Stranger!</h3>
+  {% endif%}
+
+  <ul class="posts">
+  {% for post in posts %}
+    <li><h2><th><a href="{{ url_for('posts_prj.postview', slug=post.slug ) }}">{{ post.title }}</a></th>
+    </h2></li>
+        <td>Created at {{ post.created_at.strftime('%Y-%m-%d') }} |
+          Views: {{ post.views_count + post.anon_views_count }}
+        </td>
+
+  {% else %}
+    <li><em>Unbelievable.  No entries here so far</em></li>
+  {% endfor %}
+  </ul>
+
+
+{% endblock %}

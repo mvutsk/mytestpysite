@@ -12,23 +12,24 @@ from distutils import file_util
 # Default values for variables
 DockerVerMinRequired = float(112.3)
 # DockerFilePath_siteapp = 'docker_siteapp'
-DockerFilePath_siteapp = '/my_site_data/docker_kitchen'
+DockerFilePath_siteapp = '/afranky_site_data/docker_kitchen'
 # DockerImageName = 'mytestsite'
-DockerContainerName = 'my_test_site'
+DockerContainerName = 'afranky'
 WebLocalPortForBind = '18080'
-HostDataVolume = '/my_site_data'
+HostDataVolume = '/afranky_site_data'
 SiteSourcePlace = '/home/mike/mywiki34/wiki20'
 SiteSourcePlaceGit = 'https://github.com/mvutsk/mytestpysite'
+SetupSiteContext = 'y'
 
 
 def check_dock_file(DockerFilePath):
     """Checking if docker files are presented (at least...)"""
     if os.path.isdir(DockerFilePath):
-        if os.path.isfile(DockerFilePath + "/dck_mongodb" + "/Dockerfile"):
-            print("Docker file for MongoDB: ", str(os.path.abspath(DockerFilePath + "/dck_mongodb" + "/Dockerfile")), "\n")
-        else:
-            print("Cannot find Dockerfile in", str(os.path.abspath(DockerFilePath + "/dck_mongodb")), "\n")
-            exit(1)
+        # if os.path.isfile(DockerFilePath + "/dck_mongodb" + "/Dockerfile"):
+        #    print("Docker file for MongoDB: ", str(os.path.abspath(DockerFilePath + "/dck_mongodb" + "/Dockerfile")), "\n")
+        # else:
+        #    print("Cannot find Dockerfile in", str(os.path.abspath(DockerFilePath + "/dck_mongodb")), "\n")
+        #    exit(1)
         if os.path.isfile(DockerFilePath + "/dck_nginx" + "/Dockerfile"):
             print("Docker file for Nginx: ", str(os.path.abspath(DockerFilePath + "/dck_nginx" + "/Dockerfile")), "\n")
         else:
@@ -38,6 +39,11 @@ def check_dock_file(DockerFilePath):
             print("Docker file for Python3: ", str(os.path.abspath(DockerFilePath + "/dck_py3" + "/Dockerfile")), "\n")
         else:
             print("Cannot find Dockerfile in", str(os.path.abspath(DockerFilePath + "/dck_py3")), "\n")
+            exit(1)
+        if os.path.isfile(DockerFilePath + "/dck_py3_spd" + "/Dockerfile"):
+            print("Docker file for Python3 spider: ", str(os.path.abspath(DockerFilePath + "/dck_py3_spd" + "/Dockerfile")), "\n")
+        else:
+            print("Cannot find Dockerfile in", str(os.path.abspath(DockerFilePath + "/dck_py3_spd")), "\n")
             exit(1)
     else:
         print("It is not a directory: ", DockerFilePath, "\n")
@@ -54,7 +60,14 @@ def RepresentsInt(s):
 
 
 def ask_value(question, val, vtype):
-    """Asking and verifying values during preparation for installation"""
+    """
+    Asking and verifying values during preparation for installation
+    :param question:
+    :param val:
+    :param vtype: d - dir, n - integer, v - any value
+    :return:
+    """
+
     okgo = False
     tinp = None
     while not okgo:
@@ -96,7 +109,7 @@ def ask_value(question, val, vtype):
 def install_init():
     """Gathering information required for installation"""
     tinfo = """
-    This script will build docker image from URL_to_GIT_with_file
+    This script will build docker image from https://github.com/mvutsk/mytestpysite
     Will be asked for some additional information required for this installation,
     you can accept [DefaulValue] by pressing enter or type new value.
     Note, docker build command requires sudo access, you will be prompted to enter the password.
@@ -122,9 +135,11 @@ def install_init():
 #        global DockerContainerName
 #        DockerContainerName = ask_value("Name of Docker Container", DockerContainerName, "v")
         global HostDataVolume
-        HostDataVolume = ask_value("Host folder for VOLUME mapping, will be created if absent", HostDataVolume, "d")
+        HostDataVolume = ask_value("Host folder for docker VOLUME mapping, will be created if absent", HostDataVolume, "d")
         global WebLocalPortForBind
-        WebLocalPortForBind = ask_value("Local port number for binding with web server", WebLocalPortForBind, "n")
+        WebLocalPortForBind = ask_value("Local port number for binding with web server in docker", WebLocalPortForBind, "n")
+        global SetupSiteContext
+        SetupSiteContext = ask_value("Initial context (users/pages) setup for site (y/n) (recommended - y)", SetupSiteContext, "v")
         aokgo = None
         while not aokgo:
             aokgo = input("Confirm to start building: c - continue, e - edit, x - exit: ")
@@ -139,7 +154,6 @@ def install_init():
             exit()
         if not os.path.exists(DockerFilePath_siteapp) and not os.path.isfile(DockerFilePath_siteapp):
             try:
-                # os.mkdir(DockerFilePath_siteapp)
                 dir_util.mkpath(DockerFilePath_siteapp)
             except IOError as e:
                 print("Cannot create folder in {}".format(DockerFilePath_siteapp), ", provide another path.")
@@ -183,11 +197,15 @@ def build_docker_image(DockerFilePath):
     subprocess.call(
         ["sudo", "docker", "build", "-t", "dck_py3", str(os.path.abspath(DockerFilePath + "/dck_py3"))])
     print("\nImage dck_py3 build completed.\n")
+    subprocess.call(
+        ["sudo", "docker", "build", "-t", "dck_py3_spd", str(os.path.abspath(DockerFilePath + "/dck_py3_spd"))])
+    print("\nImage dck_py3_spd build completed.\n")
 
     #subprocess.call(["sudo", "docker", "images", "dck_mongodb"])
     subprocess.call(["sudo", "docker", "images", "mongo:latest"])
     subprocess.call(["sudo", "docker", "images", "dck_nginx"])
     subprocess.call(["sudo", "docker", "images", "dck_py3"])
+    subprocess.call(["sudo", "docker", "images", "dck_py3_spd"])
     print("\n")
 
 
@@ -208,7 +226,11 @@ def create_start_stop_container_script():
     # sudo docker run --rm --name dckpysite_tmp -v /my_site_data:/data -p 8080:8080 --link dckmongo:dckmongodb -ti dck_py3  init_db
     cmdPyInit = " docker run --rm --name dckpysite_tmp"
     cmdPyInit += " -v " + str(os.path.abspath(HostDataVolume)) + ":/data"
-    cmdPyInit += " -p 8080:8080 --link dckmongo:dckmongodb -ti dck_py3 init_db"
+    if SetupSiteContext in ['y', 'Y']:
+        cmdPyInit += " -p 18888:18888 --link dckmongo:dckmongodb -ti dck_py3 set_context"
+    else:
+        cmdPyInit += " -p 18888:18888 --link dckmongo:dckmongodb -ti dck_py3 set_site"
+    #cmdPyInit += " -p 18888:18888 --link dckmongo:dckmongodb -ti dck_py3 init_db"
     cmdPyInit += "\n"
     sInitCmd += cmdPyInit
     sInitCmd += "sleep 3\n"
@@ -216,7 +238,7 @@ def create_start_stop_container_script():
     # sudo docker run -d --name dckpysite -v /my_site_data:/data -p 8080:8080 --link dckmongo:dckmongodb dck_py3 start
     cmdPyStart = " docker run -d --name dckpysite"
     cmdPyStart += " -v " + str(os.path.abspath(HostDataVolume)) + ":/data"
-    cmdPyStart += " -p 8080:8080 --link dckmongo:dckmongodb dck_py3 start"
+    cmdPyStart += " -p 18888:18888 --link dckmongo:dckmongodb dck_py3 start"
     cmdPyStart += "\n"
     sInitCmd += cmdPyStart
     sInitCmd += "sleep 3\n"
@@ -229,9 +251,15 @@ def create_start_stop_container_script():
     cmdNginx += "\n"
     sInitCmd += cmdNginx
 
+    # sudo docker run -d --name dckpyspider dck_py3_spd crawl
+    cmdPySpdStart = " docker run -d --name dckpyspider dck_py3_spd crawl"
+    cmdPySpdStart += "\n"
+    sInitCmd += cmdPySpdStart
+    sInitCmd += "sleep 3\n"
+
     sInitCmd += "else\n echo 'Please run me as root.'\nfi\n"
     try:
-        with open(str(os.path.abspath(HostDataVolume)) + "/" + DockerContainerName + '_create_db_init', 'w') as dinit_start:
+        with open(str(os.path.abspath(HostDataVolume)) + "/" + DockerContainerName + '_create_site_init', 'w') as dinit_start:
             dinit_start.write(sInitCmd)
             dinit_start.close()
             print("Script for first init created ", dinit_start.name)
@@ -277,7 +305,7 @@ def create_start_stop_container_script():
         print(e)
         exit(1)
 
-    os.chmod(str(os.path.abspath(HostDataVolume)) + "/" + DockerContainerName + '_create_db_init', mode=0o744)
+    os.chmod(str(os.path.abspath(HostDataVolume)) + "/" + DockerContainerName + '_create_site_init', mode=0o744)
     os.chmod(str(os.path.abspath(HostDataVolume)) + "/" + DockerContainerName + '_containers.start', mode=0o744)
     os.chmod(str(os.path.abspath(HostDataVolume)) + "/" + DockerContainerName + '_containers.stop', mode=0o744)
 
@@ -307,7 +335,7 @@ def get_site_from(destination, source, stype):
 def create_work_folders():
     """Makes necessary steps before starting live"""
     print("  Creating necessary folders in {}".format(HostDataVolume))
-    print("   {}/db\n   {}/logs/mongo\n   {}/logs/nginx\n   {}/logs/circus\n   {}/site"
+    print("   {}/db\n   {}/logs/mongo\n   {}/logs/nginx\n   {}/logs/uwsgi\n   {}/site"
           .format(HostDataVolume, HostDataVolume, HostDataVolume, HostDataVolume, HostDataVolume))
     try:
         if not os.path.exists(HostDataVolume) and not os.path.isfile(HostDataVolume):
@@ -321,18 +349,41 @@ def create_work_folders():
         os.chmod(HostDataVolume + '/logs/mongo', mode=0o777)
         os.mkdir(HostDataVolume + '/logs/nginx')
         os.chmod(HostDataVolume + '/logs/nginx', mode=0o777)
-        os.mkdir(HostDataVolume + '/logs/circus')
-        os.chmod(HostDataVolume + '/logs/circus', mode=0o777)
+        os.mkdir(HostDataVolume + '/logs/uwsgi')
+        os.chmod(HostDataVolume + '/logs/uwsgi', mode=0o777)
     except IOError as e:
         print(e)
         exit(1)
 
 def first_init_run():
     """First run to initialize db and site"""
+    print("Ok, executing init script to make all ready.")
+    init_script = str(os.path.abspath(HostDataVolume)) + "/" + DockerContainerName + '_create_site_init'
+    subprocess.call(["sudo", init_script])
+    os.chmod(init_script, mode=0o444)
 
 
 def final_info():
     """Final information about what was done here and where to find it"""
+    info = """\n\n\n\n    If all went without error, you are ready to start with it.
+    Was done:
+    1. Created docker containers from public images:
+        dckmongo    - just latest public
+        dcknginx    - public 1.11.10 + nginx config
+        dckpysite   - public python 3.5.3 + necessary for work addons
+        dckpyspider - public python 3.5.3 + addons + spider script
+    2. Site context, if you have requested it (users/pages):
+        login:password - userX:userXpass
+    2.1. If not, you need to create users and pages manually...
+    3. Scripts for maintaining containers (yes, not docker compose solution):
+     """
+    info += "        " + str(os.path.abspath(HostDataVolume)) + "/" + DockerContainerName + '_containers.start'
+    info += "        " + str(os.path.abspath(HostDataVolume)) + "/" + DockerContainerName + '_containers.stop'
+    info += "        " + str(os.path.abspath(HostDataVolume)) + "/" + DockerContainerName + '_create_site_init  - already executed'
+    info += "\n    4. Site initialized and running.\n"
+    info += "You can access it on http://127.0.0.1:" + WebLocalPortForBind
+    info += "\nEnjoy..."
+    print(info)
 
 
 def main():
@@ -344,9 +395,9 @@ def main():
     build_docker_image(DockerFilePath_siteapp)
     create_start_stop_container_script()
     create_work_folders()
-    #get_site_from(HostDataVolume + '/site/wiki20', DockerFilePath_siteapp + '/site/wiki20', "local")
-    get_site_from(HostDataVolume + '/site/wiki20', SiteSourcePlace, "local")
-
+    get_site_from(HostDataVolume + '/site/afranky', DockerFilePath_siteapp + '/site/afranky', "local")
+    first_init_run()
+    inal_info()
 
 if __name__ == '__main__':
     main()

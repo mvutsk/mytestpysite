@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+  {% if g.user %}
+
+    <div class="page-header">
+      <h3>Add new Post</h3>
+    </div>
+
+    <form action="{{ url_for('posts_prj.addpost') }}" method="post" class="form-horizontal">
+      {{ form.hidden_tag() }}
+      {% import 'form_macro.html' as form_macro %}
+      {{ form_macro.form_field(form.post_title, with_label=True) }}
+      {{ form_macro.form_field(form.post_data, with_label=True) }}
+      <div class="form-actions">
+        <class="form-actions">
+        <button type="submit" class="btn btn-icon btn-primary">Send</button>
+      </div>
+    </form>
+  {% else %}
+    <h2>You need to login for adding posts.</h2>
+  {% endif %}
+
+{% endblock %}

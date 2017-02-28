@@ -1,4 +1,4 @@
-FROM python:3.4-slim
+FROM python:3.5.3-slim
 VOLUME /data
 
 RUN set -ex \
@@ -11,11 +11,12 @@ RUN set -ex \
 	&& rm -rf /var/lib/apt/lists/*
 
 RUN pip3 install virtualenv
+RUN pip3 install uwsgi
 
 COPY py3-entrypoint.sh /entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh"]
 
-EXPOSE 8080
+EXPOSE 18888
 
 CMD ["start"]

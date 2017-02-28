@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block title %}All users{% endblock %}
+
+{% block content %}
+
+  <ul class="users">
+  {% if g.user %}
+    {% if users %}
+      {% for usr in users|sort(attribute='name') %}
+        {# {% if g.user.username != usr.username %} #}
+          <li><h4><th>
+            <a href="{{ url_for('accounts_prj.user_profile', username=usr.username ) }}">
+              {{ usr.name }}
+            </a>
+          </th></h4></li>
+      {#  {% else %}
+          <li><h4><th>
+            <a href="{{ url_for('accounts_prj.myprofile') }}">
+             View My Profile</a>
+          </th></h4></li>
+        {% endif %}    #}
+      {% endfor %}
+    {% else %}
+      <li><em>Unbelievable. You are the first here!</em></li>
+    {% endif %}
+  {% else %}
+  <h3>Welcome Stranger! You need to login to see all users.</h3>
+  {% endif%}
+
+  </ul>
+
+
+{% endblock %}
