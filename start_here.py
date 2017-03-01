@@ -252,16 +252,16 @@ def create_start_stop_container_script():
     sInitCmd += cmdNginx
 
     # sudo docker run --name dckpyspider_xml -ti -v /afranky_site_data:/data --link dcknginx:dcknginx dck_py3_spd xml
-    cmdPySpdStart = " docker run --name dckpyspider_csv -ti -v"
-    cmdPySpdStart += " -v " + str(os.path.abspath(HostDataVolume)) + ":/data"
+    cmdPySpdStart = " docker run --name dckpyspider_csv -ti -v "
+    cmdPySpdStart += + str(os.path.abspath(HostDataVolume)) + ":/data"
     cmdPySpdStart += ' --network="host" dck_py3_spd csv\n'
     # cmdPySpdStart += " --link dcknginx:dcknginx dck_py3_spd csv\n"
     cmdPySpdStart += " docker run --name dckpyspider_xml -ti -v "
-    cmdPySpdStart += " -v " + str(os.path.abspath(HostDataVolume)) + ":/data"
+    cmdPySpdStart += + str(os.path.abspath(HostDataVolume)) + ":/data"
     cmdPySpdStart += ' --network="host" dck_py3_xml xml\n'
     # cmdPySpdStart += " --link dcknginx:dcknginx dck_py3_spd xml\n"
     cmdPySpdStart += " docker run --name dckpyspider_json -ti -v "
-    cmdPySpdStart += " -v " + str(os.path.abspath(HostDataVolume)) + ":/data"
+    cmdPySpdStart += + str(os.path.abspath(HostDataVolume)) + ":/data"
     cmdPySpdStart += ' --network="host" dck_py3_json json\n'
     # cmdPySpdStart += " --link dcknginx:dcknginx dck_py3_spd json\n"
     sInitCmd += cmdPySpdStart
