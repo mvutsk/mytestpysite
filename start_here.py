@@ -113,7 +113,7 @@ def install_init():
     Will be asked for some additional information required for this installation,
     you can accept [DefaulValue] by pressing enter or type new value.
     Note, docker build command requires sudo access, you will be prompted to enter the password.
-    Required installed docker, git and wget.
+    Required installed docker and git.
     """
     print(tinfo)
     print('Ready to go? (y/n): ', end='')
