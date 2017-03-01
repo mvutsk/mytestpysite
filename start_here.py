@@ -251,9 +251,19 @@ def create_start_stop_container_script():
     cmdNginx += "\n"
     sInitCmd += cmdNginx
 
-    # sudo docker run -d --name dckpyspider dck_py3_spd crawl
-    cmdPySpdStart = " docker run -d --name dckpyspider dck_py3_spd crawl"
-    cmdPySpdStart += "\n"
+    # sudo docker run --name dckpyspider_xml -ti -v /afranky_site_data:/data --link dcknginx:dcknginx dck_py3_spd xml
+    cmdPySpdStart = " docker run --name dckpyspider_csv -ti -v"
+    cmdPySpdStart += " -v " + str(os.path.abspath(HostDataVolume)) + ":/data"
+    cmdPySpdStart += ' --network="host" dck_py3_spd csv\n'
+    # cmdPySpdStart += " --link dcknginx:dcknginx dck_py3_spd csv\n"
+    cmdPySpdStart += " docker run --name dckpyspider_xml -ti -v "
+    cmdPySpdStart += " -v " + str(os.path.abspath(HostDataVolume)) + ":/data"
+    cmdPySpdStart += ' --network="host" dck_py3_xml xml\n'
+    # cmdPySpdStart += " --link dcknginx:dcknginx dck_py3_spd xml\n"
+    cmdPySpdStart += " docker run --name dckpyspider_json -ti -v "
+    cmdPySpdStart += " -v " + str(os.path.abspath(HostDataVolume)) + ":/data"
+    cmdPySpdStart += ' --network="host" dck_py3_json json\n'
+    # cmdPySpdStart += " --link dcknginx:dcknginx dck_py3_spd json\n"
     sInitCmd += cmdPySpdStart
     sInitCmd += "sleep 3\n"
 
@@ -382,6 +392,14 @@ def final_info():
     info += "        " + str(os.path.abspath(HostDataVolume)) + "/" + DockerContainerName + '_create_site_init  - already executed\n'
     info += "\n    4. Site initialized and running.\n"
     info += "         You can access it on http://127.0.0.1:" + WebLocalPortForBind
+    info += """
+    5. Created containers for web spider with output in csv, xml, json, they will ask some info during execution:
+       docker start -i dckpyspider_csv
+       docker start -i dckpyspider_xml
+       docker start -i dckpyspider_json
+
+       Output in format afranky_output_`date +%F-%H%M%S` .(csv|xml|json) will be available in """
+    info += str(os.path.abspath(HostDataVolume)) + "/ folder."
     info += "\nEnjoy..."
     print(info)
 

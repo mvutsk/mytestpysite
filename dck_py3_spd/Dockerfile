@@ -1,9 +1,5 @@
 FROM python:3.5.3-slim
 
-#RUN mkdir /data
-
-#VOLUME /data
-
 RUN set -ex \
 	&& buildDeps=' \
 		build-essential \
@@ -16,13 +12,20 @@ RUN set -ex \
 	&& apt-get update && apt-get install -y $buildDeps --no-install-recommends \
 	&& rm -rf /var/lib/apt/lists/*
 
-RUN pip3 install virtualenv \
-	&& pip3 install scrapy
+RUN pip3 install virtualenv
+RUN virtualenv /venv
+RUN chmod +x /venv/bin/activate
+RUN /venv/bin/activate \
+    && pip3 install scrapy
 
-COPY afranky_spider.py /afranky_spider.py
+RUN mkdir /data
+VOLUME /data
+
+COPY afranky_spider.py /venv/afranky_spider.py
 COPY entrypoint.sh /entrypoint.sh
-RUN chmod 777 /entrypoint.sh
+RUN chmod 777 /entrypoint.sh \
+    && chmod 777 /venv/afranky_spider.py
 
 ENTRYPOINT ["/entrypoint.sh"]
 
-CMD ["crawl"]
+CMD ["csv"]

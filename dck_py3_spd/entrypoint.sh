@@ -1,25 +1,24 @@
 #!/bin/bash
-set -e
-if [[ "$1" == '-h' ]] || [[ "$1" == '--help' ]]; then
-	echo "Allowed options to get output in format:"
-	echo " -o filename.json"
-	echo " -o filename.csv"
-	echo " -o filename.xml"
-	exit 1
-fi
 
-if [[ "$1" == 'crawl' ]]; then
-	shift 1
-	cmd='scrapy runspider /afranky_spider.py'
-	set -- $cmd "$@"
-	exec "$@"
+if [[ "$1" == "csv" ]]; then
+   fname="/data/afranky_output_`date +%F-%H%M%S`"
+   echo "Executing spider with csv output to $fname.csv"
+   /venv/bin/activate
+   cd /venv
+   scrapy runspider afranky_spider.py -o $fname.csv
+elif [[ "$1" == "xml" ]]; then
+   fname="/data/afranky_output_`date +%F-%H%M%S`"
+   echo "Executing spider with XML output to $fname.xml"
+   /venv/bin/activate
+   cd /venv
+   scrapy runspider afranky_spider.py -o $fname.xml
+elif [[ "$1" == "json" ]]; then
+   fname="/data/afranky_output_`date +%F-%H%M%S`"
+   echo "Executing spider with json output to $fname.json"
+   /venv/bin/activate
+   cd /venv
+   scrapy runspider afranky_spider.py -o $fname.json
 else
-	echo "Allowed options to get output in format:"
-	echo " -o filename.json"
-	echo " -o filename.csv"
-	echo " -o filename.xml"
-	echo "crawl -o filename.xml"
-	echo ""
-        exec "$@"
+   echo "Something else: $@"
+   #exec "$@"
 fi
-

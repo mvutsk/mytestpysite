@@ -5,8 +5,10 @@ import re
 
 class AfrankySpider(scrapy.Spider):
     name = 'friends_spider'
-    print("Note, please enter correct values, no cover for incorrect ones.")
-    surl = input("Enter URL of afranky site (http://127.0.0.1:18080): ")
+    print("     Note, please enter correct values, no cover for incorrect ones.")
+    surl = input("Enter URL of afranky site ( enter to use default http://127.0.0.1:18080): ")
+    if surl == "":
+        surl = "http://127.0.0.1:18080"
     # surl = 'http://127.0.0.1:5000'
     # start_urls = [surl + '/all-users/']
     slogin = input("Enter login: ")
