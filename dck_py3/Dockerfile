@@ -11,7 +11,7 @@ RUN set -ex \
 	&& rm -rf /var/lib/apt/lists/*
 
 RUN pip3 install virtualenv
-RUN pip3 install uwsgi
+#RUN pip3 install uwsgi
 
 COPY py3-entrypoint.sh /entrypoint.sh
 RUN chmod 777 /entrypoint.sh
