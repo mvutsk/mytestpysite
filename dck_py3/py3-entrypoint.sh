@@ -5,7 +5,7 @@ initsite() {
   echo "Initializing site for starting."
   source /data/site/tenv/bin/activate
   cd /data/site/tenv/afranky
-  pip3 install -e .
+#  pip3 install -e .
   pip3 install -r requirements.txt
   echo "Starting uWSGI service."
   uwsgi --socket 0.0.0.0::18888 --wsgi-file aprj_uwsgi.py --callable app --master --processes 4 --threads 2 --logto /data/logs/uwsgi/uwsgi.log
@@ -21,7 +21,7 @@ set_site() {
   source /data/site/tenv/bin/activate
   mv -v /data/site/afranky /data/site/tenv/
   cd /data/site/tenv/afranky/
-  pip3 install -e .
+#  pip3 install -e .
   pip3 install -r requirements.txt
   echo "Init completed at `date`" > /data/site/tenv/afranky/.initcomplete
 }

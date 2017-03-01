@@ -375,11 +375,11 @@ def final_info():
     2. Site context, if you have requested it (users/pages):
         login:password - userX:userXpass
     2.1. If not, you need to create users and pages manually...
-    3. Scripts for maintaining containers (yes, not docker compose solution):
+    3. Scripts for maintaining containers (not docker compose solution):
      """
-    info += "        " + str(os.path.abspath(HostDataVolume)) + "/" + DockerContainerName + '_containers.start'
-    info += "        " + str(os.path.abspath(HostDataVolume)) + "/" + DockerContainerName + '_containers.stop'
-    info += "        " + str(os.path.abspath(HostDataVolume)) + "/" + DockerContainerName + '_create_site_init  - already executed'
+    info += "        " + str(os.path.abspath(HostDataVolume)) + "/" + DockerContainerName + '_containers.start\n'
+    info += "        " + str(os.path.abspath(HostDataVolume)) + "/" + DockerContainerName + '_containers.stop\n'
+    info += "        " + str(os.path.abspath(HostDataVolume)) + "/" + DockerContainerName + '_create_site_init  - already executed\n'
     info += "\n    4. Site initialized and running.\n"
     info += "You can access it on http://127.0.0.1:" + WebLocalPortForBind
     info += "\nEnjoy..."
