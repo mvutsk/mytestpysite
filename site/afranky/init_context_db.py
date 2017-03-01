@@ -1,17 +1,24 @@
 from werkzeug.security import generate_password_hash
 from common.acc_models import User, Friend
 from common.post_models import Post, Comment
+from flask import Flask
+from flask_mongoengine import MongoEngine
 
 
 def main():
+    dbm = MongoEngine()
+    app = Flask(__name__)
+    app.config.from_object('settings')
+    dbm.init_app(app)
+
     try:
-        user1 = User(usernam='user1', name="I'm without imagination", email='user1@example.com', visit_count=4)
+        user1 = User(username='user1', name="I'm without imagination", email='user1@example.com', visit_count=4)
         user1.pw_hash = generate_password_hash('user1pass', method='pbkdf2:sha1')
         user1.save()
-        user2 = User(usernam='user2', name='Crazy user', email='user2@example.com', visit_count=7)
+        user2 = User(username='user2', name='Crazy user', email='user2@example.com', visit_count=7)
         user2.pw_hash = generate_password_hash('user2pass', method='pbkdf2:sha1')
         user2.save()
-        user3 = User(usernam='user3', name='я есть Грут!', email='user3@example.com', visit_count=1)
+        user3 = User(username='user3', name='я есть Грут!', email='user3@example.com', visit_count=1)
         user3.pw_hash = generate_password_hash('user3pass', method='pbkdf2:sha1')
         user3.save()
 
@@ -49,8 +56,10 @@ def main():
         post2.save()
         post3.comments.append(Comment(body="Don't post anything else please...", author=user1))
         post3.save()
+        print("Setup of initial context completed.")
 
-    except:
+    except Exception as e:
+        print(e)
         print("Something went wrong. Is db started?")
 
 if __name__ == '__main__':

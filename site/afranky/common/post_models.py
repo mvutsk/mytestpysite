@@ -18,8 +18,8 @@ class Post(BaseDocument):
     body = dbm.StringField(verbose_name="Data", required=True)
     slug = dbm.StringField(max_length=255, required=True)
     comments = dbm.ListField(dbm.EmbeddedDocumentField('Comment'))
-    views_count = dbm.IntField(min_value=0, default=0, required=True)
-    anon_views_count = dbm.IntField(min_value=0, default=0, required=True)
+    views_count = dbm.IntField(min_value=0, default=0, required=False)
+    anon_views_count = dbm.IntField(min_value=0, default=0, required=False)
     viewers = dbm.ListField(dbm.ReferenceField(User), default=None, unique=False, required=False)
 
     def __init__(self, *args, **kwargs):
