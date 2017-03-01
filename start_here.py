@@ -397,8 +397,8 @@ def final_info():
        docker start -i dckpyspider_csv
        docker start -i dckpyspider_xml
        docker start -i dckpyspider_json
-
-       Output in format afranky_output_`date +%F-%H%M%S` .(csv|xml|json) will be available in """
+    """
+    info += "Output in format afranky_output_YYYY-MM-DD-HHMISS.(csv|xml|json) will be available in "
     info += str(os.path.abspath(HostDataVolume)) + "/ folder."
     info += "\nEnjoy..."
     print(info)
