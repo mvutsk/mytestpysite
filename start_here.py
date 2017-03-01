@@ -397,7 +397,7 @@ def main():
     create_work_folders()
     get_site_from(HostDataVolume + '/site/afranky', DockerFilePath_siteapp + '/site/afranky', "local")
     first_init_run()
-    inal_info()
+    final_info()
 
 if __name__ == '__main__':
     main()

@@ -7,6 +7,10 @@ VOLUME /data
 RUN set -ex \
 	&& buildDeps=' \
 		build-essential \
+		libssl-dev \
+		libffi-dev \
+		python-dev \
+		openssh-server \
 		vim \
 	' \
 	&& apt-get update && apt-get install -y $buildDeps --no-install-recommends \
@@ -17,6 +21,8 @@ RUN pip3 install virtualenv \
 
 COPY afranky_spider.py /data/
 COPY entrypoint.sh /entrypoint.sh
+RUN chmod 777 /entrypoint.sh
+
 ENTRYPOINT ["/entrypoint.sh"]
 
 CMD ["crawl"]

@@ -4,7 +4,7 @@ VOLUME /data
 RUN set -ex \
 	&& buildDeps=' \
 		build-essential \
-		openssh-server \
+#		openssh-server 
 		vim \
 	' \
 	&& apt-get update && apt-get install -y $buildDeps --no-install-recommends \
@@ -14,6 +14,7 @@ RUN pip3 install virtualenv
 RUN pip3 install uwsgi
 
 COPY py3-entrypoint.sh /entrypoint.sh
+RUN chmod 777 /entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh"]
 
