@@ -258,11 +258,11 @@ def create_start_stop_container_script():
     # cmdPySpdStart += " --link dcknginx:dcknginx dck_py3_spd csv\n"
     cmdPySpdStart += " docker run --name dckpyspider_xml -ti -v "
     cmdPySpdStart += + str(os.path.abspath(HostDataVolume)) + ":/data"
-    cmdPySpdStart += ' --network="host" dck_py3_xml xml\n'
+    cmdPySpdStart += ' --network="host" dck_py3_spd xml\n'
     # cmdPySpdStart += " --link dcknginx:dcknginx dck_py3_spd xml\n"
     cmdPySpdStart += " docker run --name dckpyspider_json -ti -v "
     cmdPySpdStart += + str(os.path.abspath(HostDataVolume)) + ":/data"
-    cmdPySpdStart += ' --network="host" dck_py3_json json\n'
+    cmdPySpdStart += ' --network="host" dck_py3_spd json\n'
     # cmdPySpdStart += " --link dcknginx:dcknginx dck_py3_spd json\n"
     sInitCmd += cmdPySpdStart
     sInitCmd += "sleep 3\n"
