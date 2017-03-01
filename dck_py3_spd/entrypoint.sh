@@ -10,7 +10,7 @@ fi
 
 if [[ "$1" == 'crawl' ]]; then
 	shift 1
-	cmd='scrapy runspider /data/afranky_spider.py'
+	cmd='scrapy runspider /afranky_spider.py'
 	set -- $cmd "$@"
 	exec "$@"
 else
@@ -19,6 +19,7 @@ else
 	echo " -o filename.csv"
 	echo " -o filename.xml"
 	echo "crawl -o filename.xml"
-	exit 1
+	echo ""
+        exec "$@"
 fi
 

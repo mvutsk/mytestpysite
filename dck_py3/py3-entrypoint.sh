@@ -8,7 +8,7 @@ initsite() {
 #  pip3 install -e .
   pip3 install -r requirements.txt
   echo "Starting uWSGI service."
-  uwsgi --socket 0.0.0.0::18888 --wsgi-file aprj_uwsgi.py --callable app --master --processes 4 --threads 2 --logto /data/logs/uwsgi/uwsgi.log
+  uwsgi --socket 0.0.0.0:18888 --wsgi-file aprj_uwsgi.py --callable app --master --processes 4 --threads 2 --logto /data/logs/uwsgi/uwsgi.log
   #--manage-script-name --mount /afranlky=myapp:app
   #--http :9090 --wsgi-file foobar.py --master --processes 4 --threads 2
   #--virtualenv /data/site/tenv/

@@ -1,8 +1,8 @@
 FROM python:3.5.3-slim
 
-RUN mkdir /data
+#RUN mkdir /data
 
-VOLUME /data
+#VOLUME /data
 
 RUN set -ex \
 	&& buildDeps=' \
@@ -19,7 +19,7 @@ RUN set -ex \
 RUN pip3 install virtualenv \
 	&& pip3 install scrapy
 
-COPY afranky_spider.py /data/
+COPY afranky_spider.py /afranky_spider.py
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod 777 /entrypoint.sh
 
