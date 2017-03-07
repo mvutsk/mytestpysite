@@ -218,7 +218,8 @@ def create_start_stop_container_script():
     cmdMdb = " docker run -d --name dckmongo"
     cmdMdb += " -v " + str(os.path.abspath(HostDataVolume)) + ":/data"
     cmdMdb += " -v " + str(os.path.abspath(HostDataVolume)) + "/db:/data/db"
-    cmdMdb += " -p 27017:27017 mongo:latest mongod --logpath /data/logs/mongo/mongo1.log --logRotate reopen --logappend"
+    # cmdMdb += " -p 27017:27017 mongo:latest mongod --logpath /data/logs/mongo/mongo1.log --logRotate reopen --logappend"
+    cmdMdb += " mongo:latest mongod --logpath /data/logs/mongo/mongo1.log --logRotate reopen --logappend"
     cmdMdb += "\n"
     sInitCmd += cmdMdb
     sInitCmd += "sleep 3\n"
@@ -227,9 +228,11 @@ def create_start_stop_container_script():
     cmdPyInit = " docker run --rm --name dckpysite_tmp"
     cmdPyInit += " -v " + str(os.path.abspath(HostDataVolume)) + ":/data"
     if SetupSiteContext in ['y', 'Y']:
-        cmdPyInit += " -p 18888:18888 --link dckmongo:dckmongodb -ti dck_py3 set_context"
+        # cmdPyInit += " -p 18888:18888 --link dckmongo:dckmongodb -ti dck_py3 set_context"
+        cmdPyInit += " --link dckmongo:dckmongodb -ti dck_py3 set_context"
     else:
-        cmdPyInit += " -p 18888:18888 --link dckmongo:dckmongodb -ti dck_py3 set_site"
+        # cmdPyInit += " -p 18888:18888 --link dckmongo:dckmongodb -ti dck_py3 set_site"
+        cmdPyInit += " --link dckmongo:dckmongodb -ti dck_py3 set_site"
     #cmdPyInit += " -p 18888:18888 --link dckmongo:dckmongodb -ti dck_py3 init_db"
     cmdPyInit += "\n"
     sInitCmd += cmdPyInit
@@ -238,7 +241,8 @@ def create_start_stop_container_script():
     # sudo docker run -d --name dckpysite -v /my_site_data:/data -p 8080:8080 --link dckmongo:dckmongodb dck_py3 start
     cmdPyStart = " docker run -d --name dckpysite"
     cmdPyStart += " -v " + str(os.path.abspath(HostDataVolume)) + ":/data"
-    cmdPyStart += " -p 18888:18888 --link dckmongo:dckmongodb dck_py3 start"
+    # cmdPyStart += " -p 18888:18888 --link dckmongo:dckmongodb dck_py3 start"
+    cmdPyStart += " --link dckmongo:dckmongodb dck_py3 start"
     cmdPyStart += "\n"
     sInitCmd += cmdPyStart
     sInitCmd += "sleep 3\n"
