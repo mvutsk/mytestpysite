@@ -1,10 +1,27 @@
 from werkzeug.security import generate_password_hash
 from common.acc_models import User, Friend
 from common.post_models import Post, Comment, Image, ImageURL, Video
-# from flask import current_app
+from flask import Flask, current_app
+from flask_mongoengine import MongoEngine
+import os
+# from flask_mail import Mail
+
+
+dbm = MongoEngine()
+# mail = Mail()
+
+
+def create_app(config_filename):
+    app = Flask(__name__)
+    app.config.from_object(config_filename)
+    app.config['SECRET_KEY'] = os.urandom(24)
+    dbm.init_app(app)
+    # mail.init_app(app)
 
 
 def main():
+    app = create_app('settings')
+
     try:
         user1 = User(username='user1', name="I'm without imagination", email='user1@example.com', visit_count=4)
         user1.pw_hash = generate_password_hash('user1pass', method='pbkdf2:sha1')
@@ -29,7 +46,7 @@ def main():
         post4.save()
 
         post5 = Video(title="Youtube video here", body="Good help :)",
-                         image_url='https://www.youtube.com/embed/p3Ezh7NBiMY',
+                         embed_code='https://www.youtube.com/embed/p3Ezh7NBiMY',
                          author=user3)
         post5.save()
 
@@ -65,15 +82,16 @@ def main():
         print("Something went wrong. Is db started?")
         print("Error ", e)
 
-    #try:
-    #    picfile = str(current_app.root_path) + "/static/pics/1456342713185612066.jpg"
-    #    with open(picfile, 'r') as pic:
-    #        post6 = Image(title="Local image here", body="Nice fox.", author=user1,
-    #                      image_file_name='1456342713185612066.jpg')
-    #        post6.image.put(pic, content_type='image/jpeg')
-    #        post6.save()
-    #except:
-    #    print("No pic included.")
+#    try:
+#        picfile = str(current_app.root_path) + "/static/pics/1456342713185612066.jpg"
+#        with open(picfile, 'r') as pic:
+#            post6 = Image(title="Local image here", body="Nice fox.", author=user1,
+#                          image_file_name='1456342713185612066.jpg')
+#            post6.image.put(pic, content_type='image/jpeg')
+#            post6.save()
+#    except Exception as e:
+#        print("Error:", e)
+
 
 if __name__ == '__main__':
     main()
