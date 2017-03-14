@@ -1,18 +1,18 @@
 from werkzeug.security import generate_password_hash
 from common.acc_models import User, Friend
 from common.post_models import Post, Comment, Image, ImageURL, Video
-from flask import current_app
+# from flask import current_app
 
 
 def main():
     try:
-        user1 = User(usernam='user1', name="I'm without imagination", email='user1@example.com', visit_count=4)
+        user1 = User(username='user1', name="I'm without imagination", email='user1@example.com', visit_count=4)
         user1.pw_hash = generate_password_hash('user1pass', method='pbkdf2:sha1')
         user1.save()
-        user2 = User(usernam='user2', name='Crazy user', email='user2@example.com', visit_count=7)
+        user2 = User(username='user2', name='Crazy user', email='user2@example.com', visit_count=7)
         user2.pw_hash = generate_password_hash('user2pass', method='pbkdf2:sha1')
         user2.save()
-        user3 = User(usernam='user3', name='я есть Грут!', email='user3@example.com', visit_count=1)
+        user3 = User(username='user3', name='я есть Грут!', email='user3@example.com', visit_count=1)
         user3.pw_hash = generate_password_hash('user3pass', method='pbkdf2:sha1')
         user3.save()
 
@@ -28,7 +28,7 @@ def main():
                          author=user2)
         post4.save()
 
-        post5 = ImageURL(title="Youtube video here", body="Good help :)",
+        post5 = Video(title="Youtube video here", body="Good help :)",
                          image_url='https://www.youtube.com/embed/p3Ezh7NBiMY',
                          author=user3)
         post5.save()
@@ -61,18 +61,19 @@ def main():
         post3.comments.append(Comment(body="Don't post anything else please...", author=user1))
         post3.save()
 
-    except:
+    except Exception as e:
         print("Something went wrong. Is db started?")
+        print("Error ", e)
 
-    try:
-        picfile = str(current_app.root_path) + "/static/pics/1456342713185612066.jpg"
-        with open(picfile, 'r') as pic:
-            post6 = Image(title="Local image here", body="Nice fox.", author=user1,
-                          image_file_name='1456342713185612066.jpg')
-            post6.image.put(pic, content_type='image/jpeg')
-            post6.save()
-    except:
-        print("No pic included.")
+    #try:
+    #    picfile = str(current_app.root_path) + "/static/pics/1456342713185612066.jpg"
+    #    with open(picfile, 'r') as pic:
+    #        post6 = Image(title="Local image here", body="Nice fox.", author=user1,
+    #                      image_file_name='1456342713185612066.jpg')
+    #        post6.image.put(pic, content_type='image/jpeg')
+    #        post6.save()
+    #except:
+    #    print("No pic included.")
 
 if __name__ == '__main__':
     main()
