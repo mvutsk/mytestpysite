@@ -18,8 +18,8 @@ class Post(BaseDocument):
     body = dbm.StringField(verbose_name="Data", required=True)
     slug = dbm.StringField(max_length=255, required=True)
     comments = dbm.ListField(dbm.EmbeddedDocumentField('Comment'))
-    views_count = dbm.IntField(min_value=0, default=0, required=False)
-    anon_views_count = dbm.IntField(min_value=0, default=0, required=False)
+    views_count = dbm.IntField(min_value=0, default=0, required=True)
+    anon_views_count = dbm.IntField(min_value=0, default=0, required=True)
     viewers = dbm.ListField(dbm.ReferenceField(User), default=None, unique=False, required=False)
 
     def __init__(self, *args, **kwargs):
@@ -44,18 +44,18 @@ class Post(BaseDocument):
     }
 
 
-class BlogPost(Post):
-    body = dbm.StringField(verbose_name="Text", required=True)
+# class BlogPost(Post):
+#    body = dbm.StringField(verbose_name="Text", required=True)
 
 
 class Video(Post):
     embed_code = dbm.StringField(verbose_name="Code for blog", required=True)
 
 
+class ImageURL(Post):
+    image_url = dbm.StringField(verbose_name="URL of picture", required=True)
+
+
 class Image(Post):
-    image_url = dbm.StringField(verbose_name="URL of picture", required=True, max_length=255)
-
-
-class Quote(Post):
-    body = dbm.StringField(verbose_name="Quote", required=True)
-    author = dbm.StringField(verbose_name="Author", required=True, max_length=255)
+    image = dbm.FileField(verbose_name="image", default=None, unique=False, required=False)
+    image_file_name = dbm.StringField(verbose_name="Filename", required=False)

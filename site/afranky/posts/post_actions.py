@@ -1,9 +1,12 @@
 from flask import Blueprint, render_template, session, g, flash, request, redirect, \
     url_for, current_app, abort, send_file
-from common.post_models import Post, BlogPost, Video, Image, Quote
+from common.post_models import Post, Video, ImageURL, Image
 from common.acc_models import User
 from common.stat_model import LogStat
-from posts.post_forms import PostForm, PostComment
+from posts.post_forms import PostForm, PostComment, ImageForm, ImageURLForm, VideoForm
+from werkzeug.utils import secure_filename
+from flask_uploads import UploadConfiguration, UploadSet, IMAGES
+import io
 
 import csv
 from datetime import datetime
@@ -25,15 +28,35 @@ def about():
 @posts_prj.route('/addpost/', methods=['GET', 'POST'])
 def addpost():
     next = request.values.get('next', '/')
-    form = PostForm()
+    # ('post', 'video', 'imageurl', 'image')
+    posttype = request.args.get('type', None)
+    if posttype == 'post':
+        form = PostForm()
+    elif posttype == 'image':
+        form = ImageForm()
+    elif posttype == 'imageurl':
+        form = ImageURLForm()
+    elif posttype == 'video':
+        form = VideoForm()
+    else:
+        form = PostForm()
+        posttype = 'post'
     form.next.data = next
 
     if form.validate_on_submit():
         user = User.objects.get(pk=session['user_id'])
-        form.save(author=user)
+        if posttype in ('post', 'imageurl', 'video'):
+            form.save(author=user)
+        elif posttype == 'image':
+            # image_data = request.FILES[form.image.name].read()
+            imgFile = form.image.data
+            imgFilename = secure_filename(imgFile.filename)
+            form.save(author=user, image_file=imgFile, img_fname=imgFilename)
+
         flash('Post added successfully.', 'success')
         return redirect(next)
-    return render_template('posts/add_post_form.html', form=form)
+    return render_template('posts/add_post_form.html', form=form, posttype=posttype)
+
 
 def logstat(post, user, ip_addr):
     if user == 'anonym':
@@ -82,6 +105,15 @@ def postview(slug):
     post.save()
     return render_template('posts/view_detail.html', post=post, post_author=post_author,
                            commform=cform)
+
+
+@posts_prj.route('/images/<pid>')
+def getImage(pid):
+    post = Post.objects.get_or_404(id=pid)
+    pimage = post.image
+    return send_file(io.BytesIO(pimage.read()),
+                     attachment_filename=post.image_file_name,
+                     mimetype='image/jpeg')
 
 
 # /statistics/?reptype=csv|xml|json

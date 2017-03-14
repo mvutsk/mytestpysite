@@ -7,17 +7,22 @@
     <div class="page-header">
       <h3>Add new Post</h3>
     </div>
-
-    <form action="{{ url_for('posts_prj.addpost') }}" method="post" class="form-horizontal">
-      {{ form.hidden_tag() }}
-      {% import 'form_macro.html' as form_macro %}
-      {{ form_macro.form_field(form.post_title, with_label=True) }}
-      {{ form_macro.form_field(form.post_data, with_label=True) }}
-      <div class="form-actions">
-        <class="form-actions">
-        <button type="submit" class="btn btn-icon btn-primary">Send</button>
-      </div>
-    </form>
+      <form action="{{ url_for('posts_prj.addpost', type=posttype) }}" method="post" class="form-horizontal" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        {% import 'form_macro.html' as form_macro %}
+        {{ form_macro.form_field(form.post_title, with_label=True) }}
+        {{ form_macro.form_field(form.post_data, with_label=True) }}
+        {% if posttype == 'image' %}
+          {{ form_macro.form_field(form.image, with_label=True) }}
+        {% elif posttype == 'imageurl' %}
+          {{ form_macro.form_field(form.post_image_url, with_label=True) }}
+        {% elif posttype == 'video' %}
+          {{ form_macro.form_field(form.post_video_url, with_label=True) }}
+        {% endif %}
+        <div class="form-actions">
+          <button type="submit" class="btn btn-icon btn-primary">Send</button>
+        </div>
+      </form>
   {% else %}
     <h2>You need to login for adding posts.</h2>
   {% endif %}
