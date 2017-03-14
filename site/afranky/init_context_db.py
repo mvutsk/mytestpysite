@@ -33,12 +33,6 @@ def main():
                          author=user3)
         post5.save()
 
-        picfile = str(current_app.root_path) + "/static/pics/1456342713185612066.jpg"
-        with open(picfile, 'r') as pic:
-            post6 = Image(title="Local image here", body="Nice fox.", author=user1, image_file_name='1456342713185612066.jpg')
-            post6.image.put(pic, content_type='image/jpeg')
-            post6.save()
-
         u1u2 = Friend(friend_user_id=user2.id, status='friend')
         user1.friends.append(u1u2)
         user1.save()
@@ -69,6 +63,16 @@ def main():
 
     except:
         print("Something went wrong. Is db started?")
+
+    try:
+        picfile = str(current_app.root_path) + "/static/pics/1456342713185612066.jpg"
+        with open(picfile, 'r') as pic:
+            post6 = Image(title="Local image here", body="Nice fox.", author=user1,
+                          image_file_name='1456342713185612066.jpg')
+            post6.image.put(pic, content_type='image/jpeg')
+            post6.save()
+    except:
+        print("No pic included.")
 
 if __name__ == '__main__':
     main()
